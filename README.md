@@ -1,30 +1,65 @@
-<div align="center">
+# MedRush Partner Hub
 
-# GraphScript
+Pharmacy and medical-shop inventory frontend for the MedRush platform. This app keeps the existing portable Preact architecture and targets the current partner and catalog APIs from the backend.
 
-GraphScript is an experimental node-based programming environment focused on building scalable applications through visual logic, modular systems, and script-driven workflows.
+## Setup
 
-[![Sponsor](https://img.shields.io/badge/Sponsor%20PROJECT-db61a2?style=for-the-badge&logo=github)](https://github.com/sponsors/AttAditya)
+```bash
+cd portable
+npm install
+npm run dev
+```
 
-</div>
+Build for production:
 
-## Contributors
+```bash
+cd portable
+npm run build
+```
 
-<a href="https://github.com/graphscript-labs/graphscript-labs.github.io/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=graphscript-labs/graphscript-labs.github.io" />
-</a>
+## Environment Variables
 
-## Support
+- `API_BASE_URL`: Backend base URL. Default: `http://localhost:8000`
+- `API_TIMEOUT_MS`: Request timeout in milliseconds. Default: `10000`
+- `API_AUTH_HEADER`: Auth header key expected by the backend. Default: `token`
+- `ENABLE_MOCK_DATA`: Set to `true` or `1` to allow small catalog fallbacks if the backend is unavailable
 
-If you find this project useful, please consider supporting it by **starring the GitHub repository** or sharing it with others who might benefit from it.
+## Available Routes
 
-Your support helps in the continued development and improvement of the project.
+- `/`
+- `/login`
+- `/register`
+- `/dashboard`
+- `/inventory`
+- `/inventory/new`
+- `/inventory/:id`
+- `/orders`
+- `/profile`
 
-You can also **contribute to the project** by submitting issues, suggesting features, or even contributing code through pull requests.
+## Features Implemented
 
-You can also sponsor the project on GitHub Sponsors: [GitHub Sponsors - AttAditya](https://github.com/sponsors/AttAditya)
+- Partner login, registration, logout, and local session persistence
+- Partner dashboard with stock metrics and low-stock visibility
+- Inventory sync backed by `GET /api/v1/partner/inventory`
+- Inventory create and edit flow backed by `PUT /api/v1/partner/inventory`
+- Mark unavailable flow implemented through inventory replacement with stock set to zero
+- Local search and filter for inventory because backend query-string parsing is unavailable
+- Local metadata layer for brand, category, expiry, prescription flags, and imagery where backend inventory shape is minimal
+- Partner profile update flow backed by `PATCH /api/v1/partner/account`
+- Orders page with clear missing-backend-state messaging
 
----
+## Known Limitations
 
-> _Made with <3 by [AttAditya](https://github.com/AttAditya)_
+- No partner order queue or fulfillment endpoints exist yet, so `/orders` is informational only
+- No profile-read endpoint exists, so profile state comes from cached auth payloads
+- No public medicine create or update endpoints exist, so inventory items must start from medicines returned by `GET /api/v1/medicines`
+- Some medicine presentation fields are stored locally until richer backend models are available
+- Browser requests can fail if backend CORS is not enabled for the frontend origin
 
+## Backend Endpoint Assumptions
+
+- `POST /api/v1/auth/signup`
+- `POST /api/v1/auth/signin`
+- `POST|PATCH|PUT /api/v1/partner/account`
+- `GET|PUT /api/v1/partner/inventory`
+- `GET /api/v1/medicines`

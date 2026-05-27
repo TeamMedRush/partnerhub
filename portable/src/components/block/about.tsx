@@ -1,48 +1,56 @@
-import { TripInfo } from "@components/kit/trip-info";
-import { Container } from "@components/ui/structure/container";
-import { Heading } from "@components/ui/text/heading";
-import { TripData } from "@interfaces/trip-data";
-import { useClasses } from "@styles";
+import type { AuthSession, User } from "@interfaces/app";
 
-export function About() {
-  const trips: TripData[] = [
-    {
-      id: "trip1",
-      scale: "small",
-      picks: [],
-      drop: {
-        name: "123 Main St, Springfield",
-        latitude: 37.7749,
-        longitude: -122.4194,
-      },
-      payout: {
-        amount: 10.00,
-        currency: "USD"
-      },
-      stats: {
-        time: 10,
-        distance: 5
-      }
-    }
-  ];
+interface AboutProps {
+  session: AuthSession<User> | null;
+}
 
+const pillars = [
+  {
+    title: "Keep stock live",
+    description: "Use the existing partner inventory endpoint to keep price and quantity synced without introducing a separate backend contract.",
+  },
+  {
+    title: "Enrich locally, ship safely",
+    description: "Brand, category, expiry, and prescription flags are stored as local UI metadata until medicine management APIs arrive.",
+  },
+  {
+    title: "Flag backend gaps clearly",
+    description: "The orders route stays honest about missing partner queue endpoints instead of pretending a fulfillment flow exists already.",
+  },
+];
+
+export function About({ session }: AboutProps) {
   return (
-    <Container className={useClasses("about")}>
-      <Heading size="max">
-        Hello, Agent!
-      </Heading>
+    <section className="about">
+      <div className="about__hero">
+        <div className="about__copy">
+          <p className="about__eyebrow">Pharmacy partner workspace</p>
+          <h2>Run inventory, pricing, and readiness from one MedRush partner console.</h2>
+          <p className="about__summary">
+            Partner Hub is shaped around the current backend contract: live auth, live inventory write-back,
+            local catalog enrichment, and graceful messaging where order queue support is still missing.
+          </p>
+        </div>
 
-      <Heading size="medium">
-        Pick the delivery you want to make!
-      </Heading>
+        <div className="about__actions">
+          <a className="about__button about__button--primary" href={session ? "/dashboard" : "/login"}>
+            {session ? "Open dashboard" : "Sign in"}
+          </a>
+          <a className="about__button about__button--secondary" href={session ? "/inventory" : "/register"}>
+            {session ? "Manage inventory" : "Register pharmacy"}
+          </a>
+        </div>
+      </div>
 
-      <Container>
-        {trips.map(trip => <TripInfo
-          key={trip.id}
-          data={trip}
-        />)}
-      </Container>
-    </Container>
+      <div className="about__grid">
+        {pillars.map((pillar) => (
+          <article className="about__card" key={pillar.title}>
+            <h3>{pillar.title}</h3>
+            <p>{pillar.description}</p>
+          </article>
+        ))}
+      </div>
+    </section>
   );
 }
 
