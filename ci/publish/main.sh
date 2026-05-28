@@ -1,3 +1,6 @@
+git checkout gh-pages
+git pull origin gh-pages
+
 git checkout main
 git pull origin main
 git checkout --orphan gh-pages
@@ -17,6 +20,8 @@ rm -rf ./*
 
 mv .dist/* ./
 rm -rf .dist
+
+cp index.html 404.html
 
 git config user.name "Attachment Aditya"
 git config user.email "attachment.aditya@gmail.com"
